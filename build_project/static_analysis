@@ -1,0 +1,2 @@
+docker build -t "Meal_Planner" .
+docker run --rm "Meal_Planner" tox lint
