@@ -1,0 +1,36 @@
+<!-- Modal -->
+<div id="myModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Ratios</h4>
+      </div>
+      <div class="modal-body">
+<table>
+  <tr>
+    <th>Time</th>
+    <th>Carbs</th>
+    <th> Protein</th>
+    <th> Fat</th>
+  </tr>
+  {% for value in ratioData %}
+    <tr>
+      <td>{{ value.time }}</td>
+      <td>{{ value.carbs }}</td>
+      <td>{{ value.protein }}</td>
+      <td>{{ value.fat }}</td>
+    </tr>
+  {% endfor %}
+</table>
+
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+
+  </div>
+</div>
