@@ -4,7 +4,14 @@
  <div class="column">
    Meal
   <span> Meal Time:</span>
-
+  <span>Ratios: <select onChange="ratioSelect()">
+    {% for ratio in ratioData %}
+   <option value="{{ratio.time}}">{{ratio.time}}</option>
+   {% endfor %}
+  </select></span>
+<span>Carb Ratio<input name="carbRatio" type="text" ></span>
+<span> Protein Ratio<input type="text" ></span>
+<span> Fat Ratio<input type="text" ></span>
 
 
 
@@ -35,13 +42,26 @@
    </div>
    </td></tr>
    </table>
-   <button>Add food</button>
+   <button onClick="sayhi();">Add food</button>
  </div>
 </div>
 
 
 
+<script language="javascript">
+
+  function ratioSelect()
+  {
+    alert("Ratio Changed")
 
 
+    
+  }
+
+function sayhi()
+{
+  alert("hi")
+}
+</script>
 
 {% endblock %}
