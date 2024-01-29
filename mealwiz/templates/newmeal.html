@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block mealTable %}
+<div class="row">
+ <div class="column">
+   Meal
+  <span> Meal Time:</span>
+
+
+
+
+
+ </div>
+
+ <div class="column" style="background-color:powderblue;">
+   Food Library
+   <table style="">
+     <tr><th>Food List</th>
+        <th>food items</th>
+        </tr>
+        <tr>
+          <td>
+            <table>
+              <tr>
+<th>Category</th></tr>
+     {% for category in foodCategories %}
+      <tr>
+        <td>
+        <button value="{{category}}"> {{category}}</button>
+        </td>
+      </tr>
+     {% endfor %}
+   </table>
+   </td><td>
+   <div >
+   </div>
+   </td></tr>
+   </table>
+   <button>Add food</button>
+ </div>
+</div>
+
+
+
+
+
+
+{% endblock %}
