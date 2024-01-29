@@ -4,14 +4,14 @@
  <div class="column">
    Meal
   <span> Meal Time:</span>
-  <span>Ratios: <select onChange="ratioSelect()">
+  <span>Ratios: <select id="ratioSelected" onChange="ratioSelect()">
     {% for ratio in ratioData %}
    <option value="{{ratio.time}}">{{ratio.time}}</option>
    {% endfor %}
   </select></span>
-<span>Carb Ratio<input name="carbRatio" type="text" ></span>
-<span> Protein Ratio<input type="text" ></span>
-<span> Fat Ratio<input type="text" ></span>
+<span>Carb Ratio<input id="carbRatio" type="text" ></span>
+<span> Protein Ratio<input id="protRatio" type="text" ></span>
+<span> Fat Ratio<input id="fatRatio" type="text" ></span>
 
 
 
@@ -50,12 +50,22 @@
 
 <script language="javascript">
 
+
   function ratioSelect()
   {
-    alert("Ratio Changed")
+    var Ratios= JSON.parse('{{ratioData|tojson}}');
+    //const inputString =$("#ratioSelected").val();
+    var time=$("#ratioSelected").val();
+    for(let i = 0; i < Ratios.length; i++) {
+    let obj = Ratios[i];
+    if(obj["time"]==time){
+      $("#carbRatio").val(obj['carbs']);
+      $("#protRatio").val(obj['protein']);
+      $("#fatRatio").val(obj['fat']);
+    }
+}
 
 
-    
   }
 
 function sayhi()
