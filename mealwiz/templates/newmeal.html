@@ -1,20 +1,29 @@
 {% extends "base.html" %}
 {% block mealTable %}
 <div class="row">
- <div class="column">
-   Meal
-  <span> Meal Time:</span>
+ <div class="column" >
+   <div >
+<div style="  float:left;padding:10px">
+  <span id="currentTime" onclick="sayhi()"style="float:left;"> Meal Time: </span><br>
   <span>Ratios: <select id="ratioSelected" onChange="ratioSelect()">
     {% for ratio in ratioData %}
    <option value="{{ratio.time}}">{{ratio.time}}</option>
    {% endfor %}
   </select></span>
-<span>Carb Ratio<input id="carbRatio" type="text" ></span>
-<span> Protein Ratio<input id="protRatio" type="text" ></span>
-<span> Fat Ratio<input id="fatRatio" type="text" ></span>
+  <br>
+<span>Carb Ratio<input id="carbRatio" type="text" ></span><span>Total Carb: </span><br>
+<span> Protein Ratio<input id="protRatio" type="text" ></span><span>Total Protein: </span><br>
+<span> Fat Ratio<input id="fatRatio" type="text" ></span><span>Total Fat: </span>
+</div>
+<br>
+<table class="food-table">
+  <tr>
+    <th>Food Name</th><th>Amount</th><th><unit/th><th>carbs</th><th>protein</th><th>fat</th>
+    </tr>
+    <tr><td></td></tr>
+  </table>
 
-
-
+</div>
 
  </div>
 
@@ -49,12 +58,13 @@
 
 
 <script language="javascript">
-
+  $( document ).ready(function() {
+      sayhi();
+  });
 
   function ratioSelect()
   {
     var Ratios= JSON.parse('{{ratioData|tojson}}');
-    //const inputString =$("#ratioSelected").val();
     var time=$("#ratioSelected").val();
     for(let i = 0; i < Ratios.length; i++) {
     let obj = Ratios[i];
@@ -67,10 +77,22 @@
 
 
   }
-
+  $('.food-table').find('td').each(function() {
+    $(this).click(function() {
+      $('.food-table td').not($(this)).prop('contenteditable', false);
+      $(this).prop('contenteditable', true);
+    });
+    $(this).blur(function() {
+      $(this).prop('contenteditable', false);
+    });
+  });
+  
 function sayhi()
 {
-  alert("hi")
+  var d = new Date();
+  var n = d.toLocaleTimeString();
+  $("#currentTime").text("Meal Time: "+n);
+
 }
 </script>
 
