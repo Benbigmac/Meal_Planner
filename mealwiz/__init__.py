@@ -49,20 +49,29 @@ def create_app(test_config=None):
         f.close()
         return data['list']
 
-    @app.route('/getcategorylist',methods=['GET'])
+    #this function will be pinged by jquery to get the list of food items and their relevant data
+    @app.route('/getcategorylist', methods=['GET'])
     def getcategorylist(category):
         foodlist=__getFoodCategoryList(category)
         return foodlist
 
+    #helper function to go and access database to give what category food is in
     def __getCategories():
         categorylist=["fruit","Mcdonalds","Arbys","meat","vegetables","baking ingredients"]
         return categorylist
 
-    def __getMeals():
-        return
-
+    #function to access database and return list of food items in category
     def __getFoodCategoryList(category):
         foodlist=['apple','banana','pear']
         return foodlist
+
+    #access database and gets list of meal data (for front page)
+    def __getMeals():
+        return
+
+    #helper function to help you calculate how many calories each meal or food item has
+    def __calculate_Calories(carb,protein,fat):
+        totalCal= (carb*4)+(protein*4)+(fat*9)
+        return 0
 
     return app
