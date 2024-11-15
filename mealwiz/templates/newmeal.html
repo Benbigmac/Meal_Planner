@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "main.html" %}
 {% block mealTable %}
 <div class="row">
  <div class="column" >
@@ -6,8 +6,8 @@
 <div style="  float:left;padding:10px">
   <span id="currentTime" onclick="sayhi()"style="float:left;"> Meal Time: </span><br>
   <span>Ratios: <select id="ratioSelected" onChange="ratioSelect()">
-    {% for ratio in ratioData %}
-   <option value="{{ratio.time}}">{{ratio.time}}</option>
+    {% for ratio in ratios %}
+   <option value="{{ratio.0}}">{{ratio.0}}</option>
    {% endfor %}
   </select></span>
   <br>
@@ -29,28 +29,38 @@
 
  <div class="column" style="background-color:powderblue;">
    Food Library
-   <table style="">
-     <tr><th>Food List</th>
-        <th>food items</th>
-        </tr>
-        <tr>
-          <td>
-            <table>
-              <tr>
-<th>Category</th></tr>
-     {% for category in foodCategories %}
-      <tr>
-        <td>
-        <button value="{{category}}"> {{category}}</button>
-        </td>
-      </tr>
-     {% endfor %}
-   </table>
-   </td><td>
-   <div >
-   </div>
-   </td></tr>
-   </table>
+<table>
+  <tr>
+  <th></th>
+  <th></th>
+  </tr>
+  <tr>
+    <td>
+<div class="container">
+    <!-- First Scrollable Select Menu -->
+    <select id="firstMenu" size="5" class="select-menu" onchange="showSecondMenu()">
+        <option value="fruits">Fruits</option>
+        <option value="vegetables">Vegetables</option>
+        <option value="grains">Grains</option>
+        <option value="dairy">Dairy</option>
+        <option value="meat">Meat</option>
+         {% for category in foodCategories %}
+         <option value="{{category}}">{{category}}</option>
+         {% endfor %}
+
+    </select>
+    </td>
+<td>
+    <div id="secondMenuContainer" class="second-menu">
+        <label for="secondMenu">Choose an Item:</label>
+        <select id="secondMenu" size="5">
+            <!-- Options will be populated based on selection -->
+        </select>
+    </div>
+    </td>
+    </tr>
+</table>
+
    <button onClick="sayhi();">Add food</button>
  </div>
 </div>
@@ -64,14 +74,16 @@
 
   function ratioSelect()
   {
-    var Ratios= JSON.parse('{{ratioData|tojson}}');
+    var Ratios= JSON.parse('{{ratios|tojson}}');
     var time=$("#ratioSelected").val();
     for(let i = 0; i < Ratios.length; i++) {
     let obj = Ratios[i];
-    if(obj["time"]==time){
-      $("#carbRatio").val(obj['carbs']);
-      $("#protRatio").val(obj['protein']);
-      $("#fatRatio").val(obj['fat']);
+    if(obj[0]==time){
+      console.log("here");
+      $("#carbRatio").val(obj[2]);
+      $("#protRatio").val(obj[3]);
+      $("#fatRatio").val(obj[4]);
+      break;
     }
 }
 
@@ -86,14 +98,49 @@
       $(this).prop('contenteditable', false);
     });
   });
-  
+
 function sayhi()
 {
   var d = new Date();
   var n = d.toLocaleTimeString();
   $("#currentTime").text("Meal Time: "+n);
 
+  const secondMenu = document.getElementById("secondMenu");
+  selectItem = secondMenu.value;
+  console.log(selectItem);
 }
+
+const options = {
+    fruits: ["Apple", "Banana", "Cherry", "Date", "Grape"],
+    vegetables: ["Carrot", "Lettuce", "Onion", "Pepper", "Tomato"],
+    grains: ["Rice", "Wheat", "Oats", "Barley", "Corn"],
+    dairy: ["Milk", "Cheese", "Butter", "Yogurt", "Cream"],
+    meat: ["Chicken", "Beef", "Pork", "Lamb", "Fish"]
+};
+
+// Function to show and populate the second menu
+function showSecondMenu() {
+    const firstMenu = document.getElementById("firstMenu");
+    const selectedCategory = firstMenu.value;
+    const secondMenuContainer = document.getElementById("secondMenuContainer");
+    const secondMenu = document.getElementById("secondMenu");
+
+    // Clear previous options
+    secondMenu.innerHTML = "";
+
+    // Populate the second menu with options based on selection
+    options[selectedCategory].forEach(item => {
+        const option = document.createElement("option");
+        option.value = item.toLowerCase();
+        option.textContent = item;
+        secondMenu.appendChild(option);
+    });
+
+    // Show the second menu
+    secondMenuContainer.style.display = "block";
+}
+
+
 </script>
 
 {% endblock %}

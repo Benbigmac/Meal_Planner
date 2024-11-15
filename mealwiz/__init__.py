@@ -1,6 +1,6 @@
 import os, json
 from flask import Flask, render_template
-
+from .dbhandler import mealWizDB
 
 
 
@@ -30,24 +30,39 @@ def create_app(test_config=None):
 
     @app.route('/')
     def entrance():
-        ratioData=__getRatios()
-        return render_template("meallist.html",ratioData=ratioData)
+        mwDB=mealWizDB()
+        ratios=mwDB.get_all_ratios()
+        return render_template("meallist.html",ratios=ratios, meals={})
 
     @app.route('/newMeal')
     def newmeal():
-        ratioData=__getRatios()
+        mwDB=mealWizDB()
+        ratios=mwDB.get_all_ratios()
         foodCategories=__getCategories()
-        return render_template("newmeal.html",foodCategories=foodCategories,ratioData=ratioData)
+        return render_template("newmeal.html",foodCategories=foodCategories,ratios=ratios)
 
     @app.route('/Updateratios')
     def ratios():
-        return render_template("ratioLibrary.html")
+        mwDB=mealWizDB()
+        ratios=mwDB.get_all_ratios()
+        print(ratios)
+        return render_template("ratioLibrary.html",ratios=ratios)
 
-    def __getRatios():
-        f = open('/home/benbigmac/Documents/mealwizard/mealwiz/config/ratios.json')
-        data = json.load(f)
-        f.close()
-        return data['list']
+    @app.route('/test')
+    def rest():
+        return render_template("test.html")
+
+    @app.route('/create_new_ratio')
+    def create_newratio():
+        return render_template("create_new_ratio.html")
+
+    @app.route('/addRatio')
+    def create_add_ratio():
+        mwDB=mealWizDB()
+        #mwDB.create_ratio('12:00', 'Lunch', 0.116, 0.045, 0.08)
+        return mwDB.get_all_ratios()
+
+
 
     #this function will be pinged by jquery to get the list of food items and their relevant data
     @app.route('/getcategorylist', methods=['GET'])

@@ -15,12 +15,12 @@
     <th> Protein</th>
     <th> Fat</th>
   </tr>
-  {% for value in ratioData %}
+  {% for value in ratios %}
     <tr>
-      <td>{{ value.time }}</td>
-      <td>{{ value.carbs }}</td>
-      <td>{{ value.protein }}</td>
-      <td>{{ value.fat }}</td>
+      <td>{{ value.0 }}</td>
+      <td>{{ value.2 }}</td>
+      <td>{{ value.3 }}</td>
+      <td>{{ value.4 }}</td>
     </tr>
   {% endfor %}
 </table>
