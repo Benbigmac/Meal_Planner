@@ -3,88 +3,53 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Scrollable Select Menu</title>
+    <title>Delete Table Row</title>
     <style>
-        /* Container styles */
-        .container {
-            margin: 20px;
-            font-family: Arial, sans-serif;
+        table {
+            border-collapse: collapse;
+            width: 50%;
+            margin: 20px auto;
         }
-
-        /* First select menu */
-        .select-menu {
-            width: 200px;
-            height: 100px;
-            overflow-y: scroll;
-            margin-bottom: 20px;
-        }
-
-        /* Second select menu (initially hidden) */
-        .second-menu {
-            display: none;
-            width: 200px;
-            height: 100px;
-            overflow-y: scroll;
-        }
-
-        /* Styling select options */
-        .select-menu option, .second-menu option {
+        th, td {
+            border: 1px solid #ddd;
             padding: 8px;
-            font-size: 16px;
+        }
+        th {
+            background-color: #f4f4f4;
+        }
+        .delete-btn {
+            color: red;
+            cursor: pointer;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <!-- First Scrollable Select Menu -->
-        <label for="firstMenu">Choose a Category:</label>
-        <select id="firstMenu" size="5" class="select-menu" onchange="showSecondMenu()">
-            <option value="fruits">Fruits</option>
-            <option value="vegetables">Vegetables</option>
-            <option value="grains">Grains</option>
-            <option value="dairy">Dairy</option>
-            <option value="meat">Meat</option>
-        </select>
-
-        <!-- Second Scrollable Select Menu -->
-        <div id="secondMenuContainer" class="second-menu">
-            <label for="secondMenu">Choose an Item:</label>
-            <select id="secondMenu" size="5">
-                <!-- Options will be populated based on selection -->
-            </select>
-        </div>
-    </div>
+    <table id="myTable">
+        <thead>
+            <tr>
+                <th>Item</th>
+                <th>Quantity</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Apples</td>
+                <td>10</td>
+                <td><button class="delete-btn" onclick="deleteRow(this)">Delete</button></td>
+            </tr>
+            <tr>
+                <td>Bananas</td>
+                <td>5</td>
+                <td><button class="delete-btn" onclick="deleteRow(this)">Delete</button></td>
+            </tr>
+        </tbody>
+    </table>
 
     <script>
-        // Sample options for each category
-        const options = {
-            fruits: ["Apple", "Banana", "Cherry", "Date", "Grape"],
-            vegetables: ["Carrot", "Lettuce", "Onion", "Pepper", "Tomato"],
-            grains: ["Rice", "Wheat", "Oats", "Barley", "Corn"],
-            dairy: ["Milk", "Cheese", "Butter", "Yogurt", "Cream"],
-            meat: ["Chicken", "Beef", "Pork", "Lamb", "Fish"]
-        };
-
-        // Function to show and populate the second menu
-        function showSecondMenu() {
-            const firstMenu = document.getElementById("firstMenu");
-            const selectedCategory = firstMenu.value;
-            const secondMenuContainer = document.getElementById("secondMenuContainer");
-            const secondMenu = document.getElementById("secondMenu");
-
-            // Clear previous options
-            secondMenu.innerHTML = "";
-
-            // Populate the second menu with options based on selection
-            options[selectedCategory].forEach(item => {
-                const option = document.createElement("option");
-                option.value = item.toLowerCase();
-                option.textContent = item;
-                secondMenu.appendChild(option);
-            });
-
-            // Show the second menu
-            secondMenuContainer.style.display = "block";
+        function deleteRow(button) {
+            const row = button.closest('tr');
+            row.remove();
         }
     </script>
 </body>

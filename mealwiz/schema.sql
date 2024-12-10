@@ -1,15 +1,34 @@
-CREATE TABLE `food` (
-  `id` INTEGER PRIMARY KEY,
-  `type` INTEGER,
-  `foodname` TEXT,
-  `carbs` REAL,
-  `protein` REAL,
-  `fat` REAL,
-  `servingsize` REAL,
-  `unittype` TEXT,
-  `foodtype` INTEGER,
-  FOREIGN KEY (`foodtype`) REFERENCES `foodtypes` (`id`)
+CREATE TABLE food (
+    id INTEGER PRIMARY KEY,
+    foodname TEXT NOT NULL,
+    servingsize DOUBLE NOT NULL,
+   servingsizeunit TEXT NOT NULL,
+    carbs REAL,
+    protein REAL,
+    fat REAL,
+    fiber REAL,
+    saturated_fat REAL,
+    trans_fat REAL,
+    cholesterol REAL,
+    sodium REAL,
+    potassium REAL,
+    calcium REAL,
+    iron REAL,
+    vitamin_a REAL,
+    vitamin_c REAL,
+    vitamin_d REAL,
+    vitamin_k REAL,
+    magnesium REAL,
+    zinc REAL,
+    glycemic_index REAL,
+    glycemic_load REAL,
+    omega_3 REAL,
+    omega_6 REAL,
+    foodtype INTEGER,
+    FOREIGN KEY (foodtype) REFERENCES foodtypes (id)
 );
+
+
 
 CREATE TABLE `foodtypes` (
   `id` INTEGER PRIMARY KEY,
@@ -17,7 +36,7 @@ CREATE TABLE `foodtypes` (
 );
 
 CREATE TABLE `Meals` (
-  `code` INTEGER PRIMARY KEY,
+  `code` INTEGER PRIMARY KEY AUTOINCREMENT,
   `mealtime` TIMESTAMP,
   `totalcarbs` REAL,
   `totalfat` REAL,

@@ -1,27 +1,26 @@
 {% extends "main.html" %}
 {% block mealTable %}
+<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
 <div class="row">
  <div class="column" >
    <div >
 <div style="  float:left;padding:10px">
-  <span id="currentTime" onclick="sayhi()"style="float:left;"> Meal Time: </span><br>
+  <span id="currentTime" onclick="updateTime()"style="float:left;"> Meal Time: </span> <span id="bolus"style=" float:right;">Bolus:</span>
+  <br>
   <span>Ratios: <select id="ratioSelected" onChange="ratioSelect()">
     {% for ratio in ratios %}
    <option value="{{ratio.0}}">{{ratio.0}}</option>
    {% endfor %}
   </select></span>
   <br>
-<span>Carb Ratio<input id="carbRatio" type="text" ></span><span>Total Carb: </span><br>
-<span> Protein Ratio<input id="protRatio" type="text" ></span><span>Total Protein: </span><br>
-<span> Fat Ratio<input id="fatRatio" type="text" ></span><span>Total Fat: </span>
+<span>Carb Ratio<input id="carbRatio" type="text" ></span><span id="totalCarb">Total Carb: </span><br>
+<span> Protein Ratio<input id="protRatio" type="text" ></span><span id="totalProtein">Total Protein: </span><br>
+<span> Fat Ratio<input id="fatRatio" type="text" ></span><span id="totalFat">Total Fat: </span><br>
+<span id="totalCal">Total Calorie: </span>
+
 </div>
 <br>
-<table class="food-table">
-  <tr>
-    <th>Food Name</th><th>Amount</th><th><unit/th><th>carbs</th><th>protein</th><th>fat</th>
-    </tr>
-    <tr><td></td></tr>
-  </table>
+
 
 </div>
 
@@ -39,11 +38,6 @@
 <div class="container">
     <!-- First Scrollable Select Menu -->
     <select id="firstMenu" size="5" class="select-menu" onchange="showSecondMenu()">
-        <option value="fruits">Fruits</option>
-        <option value="vegetables">Vegetables</option>
-        <option value="grains">Grains</option>
-        <option value="dairy">Dairy</option>
-        <option value="meat">Meat</option>
          {% for category in foodCategories %}
          <option value="{{category}}">{{category}}</option>
          {% endfor %}
@@ -52,7 +46,7 @@
     </td>
 <td>
     <div id="secondMenuContainer" class="second-menu">
-        <label for="secondMenu">Choose an Item:</label>
+        <label for="secondMenu"></label>
         <select id="secondMenu" size="5">
             <!-- Options will be populated based on selection -->
         </select>
@@ -64,13 +58,65 @@
    <button onClick="sayhi();">Add food</button>
  </div>
 </div>
+<div class="table-container">
+  <table id="foodList" class="food-table" style="    max-width: 100%;">
+    <thead>
+            <tr>
+                <th class="Nonvis" style="display:none">ID</th>
+                <th>Food Name</th>
+                <th>Serving Size</th>
+                <th>Serving Size Unit</th>
+                <th>Carbs</th>
+                <th>Protein</th>
+                <th>Fat</th>
+                <th class="Nonvis" style="display:none">Fiber</th>
+                <th class="Nonvis" style="display:none">Saturated Fat</th>
+                <th class="Nonvis" style="display:none">Trans Fat</th>
+                <th class="Nonvis" style="display:none">Cholesterol</th>
+                <th class="Nonvis" style="display:none">Sodium</th>
+                <th class="Nonvis" style="display:none">Potassium</th>
+                <th class="Nonvis" style="display:none">Calcium</th>
+                <th class="Nonvis" style="display:none">Iron</th>
+                <th class="Nonvis" style="display:none">Vitamin A</th>
+                <th class="Nonvis" style="display:none">Vitamin C</th>
+                <th class="Nonvis" style="display:none">Vitamin D</th>
+                <th class="Nonvis" style="display:none">Vitamin K</th>
+                <th class="Nonvis" style="display:none">Magnesium</th>
+                <th class="Nonvis" style="display:none">Zinc</th>
+                <th class="Nonvis" style="display:none">Glycemic Index</th>
+                <th class="Nonvis" style="display:none">Glycemic Load</th>
+                <th class="Nonvis" style="display:none">Omega-3</th>
+                <th class="Nonvis" style="display:none">Omega-6</th>
+                <th class="Nonvis" style="display:none">Food Type</th>
+            </tr>
+        </thead>
+        <tbody id="tbod" style="overflow-y:scroll;">
 
 
+        </tbody>
 
+    </table>
+
+  </div><div class="bottomFoot">
+
+<footer style="position:fixed"><button onclick="saveMeal()" style="float:right">Save</button></footer>
+</div>
 <script language="javascript">
   $( document ).ready(function() {
-      sayhi();
+    var d = new Date();
+    var n = d.toLocaleTimeString();
+    $("#currentTime").text("Meal Time: "+n);
+
   });
+
+
+  function saveMeal(){
+
+
+
+
+
+  }
 
   function ratioSelect()
   {
@@ -98,25 +144,222 @@
       $(this).prop('contenteditable', false);
     });
   });
+  // Add double-click event listener to all cells in the table
+  document.getElementById('foodList').addEventListener('dblclick', function(event) {
+    if (event.target.tagName.toLowerCase() === 'td') {
+      const cell = event.target;
+      const currentText = cell.textContent;  // Get the current text of the cell
 
-function sayhi()
-{
+      const input = document.createElement('input');
+      input.type = 'text';
+      input.value = currentText;
+
+      // Replace the cell's content with the input field
+      cell.textContent = '';
+      cell.appendChild(input);
+      cell.setAttribute('data-original-value', currentText);
+      // Focus the input field so the user can start typing immediately
+      input.focus();
+
+
+
+
+      // When the input loses focus, save the new value back to the cell
+      input.addEventListener('blur', function() {
+        cell.textContent = input.value;
+      });
+
+
+      input.addEventListener('keydown', function(event) {
+        if (event.key === 'Enter') {
+          cell.textContent = input.value;
+          if(cell.classList.contains("serves") ){
+            const originalValue = cell.getAttribute('data-original-value');
+            const editedValue = cell.textContent;
+            const column = cell.cellIndex;  // Get the column index
+            const row = cell.closest('tr');  // Get row
+            let rate = editedValue/originalValue;
+            for(let i = 4; i < row.cells.length-1; i++){
+              let cellVal=parseFloat(row.cells[i].textContent || row.cells[i].innerText);
+              cellVal=cellVal*rate;
+              row.cells[i].textContent=cellVal;
+
+          }
+
+          }
+        }
+        handleTableUpdate();
+
+      });
+    }
+  });
+
+function updateTime(){
   var d = new Date();
   var n = d.toLocaleTimeString();
   $("#currentTime").text("Meal Time: "+n);
 
+
+}
+function sayhi()
+{
+
   const secondMenu = document.getElementById("secondMenu");
   selectItem = secondMenu.value;
   console.log(selectItem);
+  const csrfToken = $('input[name="csrf_token"]').val();
+  const table = document.getElementById("tbod");
+
+
+  $.ajax({
+      url: '/getFoodInfo',
+      type: 'POST',
+      contentType: 'application/json',
+      headers: {
+          'X-CSRFToken': csrfToken  // Include token in header to avoid error
+      },
+      data: JSON.stringify({ key: selectItem }),
+      success: function (response) {
+          console.log('Success:', response);
+          const newRow = table.insertRow();
+          let counter = 1;
+          response[0].forEach(data => {
+            const newCell = newRow.insertCell();
+            newCell.textContent = data;
+            if(counter==3){
+              newCell.classList.add("serves");
+            }
+             if(counter==1 ||counter >7){
+              newCell.classList.add('Nonvis');
+            }
+            counter++;
+});
+  const buttonCell = newRow.insertCell();
+  const button = document.createElement('button');
+  button.textContent = "Delete";
+  button.onclick = function () {
+    const row = button.closest('tr');
+    row.remove();
+    handleTableUpdate();
+
+   };
+   buttonCell.appendChild(button);
+   handleTableUpdate();
+              },
+
+        error: function (xhr, status, error) {
+          console.error('Error:', error);
+      }
+  });
+
 }
 
-const options = {
-    fruits: ["Apple", "Banana", "Cherry", "Date", "Grape"],
-    vegetables: ["Carrot", "Lettuce", "Onion", "Pepper", "Tomato"],
-    grains: ["Rice", "Wheat", "Oats", "Barley", "Corn"],
-    dairy: ["Milk", "Cheese", "Butter", "Yogurt", "Cream"],
-    meat: ["Chicken", "Beef", "Pork", "Lamb", "Fish"]
-};
+function handleTableUpdate() {
+  const table = document.getElementById('foodList');
+  const rows = table.rows;
+  let totalCarbSum = 0;
+  let totalProSum = 0;
+  let totalFatSum = 0;
+
+  for (let i = 1; i < rows.length; i++) {
+    const row = rows[i];
+
+
+    if (row.cells.length>1) {
+      const carbCell = row.cells[4];  // carb column
+      const carbValue = parseFloat(carbCell.textContent || carbCell.innerText); // Convert to float
+
+      if (!isNaN(carbValue)) {
+        totalCarbSum += carbValue;
+      }
+
+      const proCell = row.cells[5]; // Protein column
+      const proValue = parseFloat(proCell.textContent || proCell.innerText);
+
+      if (!isNaN(proValue)) {
+        totalProSum += proValue;
+      }
+
+      const fatCell = row.cells[6]; // Fat column
+      const fatValue = parseFloat(fatCell.textContent || fatCell.innerText);
+
+      if (!isNaN(fatValue)) {
+        totalFatSum += fatValue;
+      }
+    } else {
+    //  console.log(`Row ${i} does not have enough cells.`);
+    }
+  }
+  document.getElementById('totalCarb').textContent="Total Carb: "+totalCarbSum;
+  document.getElementById('totalProtein').textContent="Total Protein: "+totalProSum;
+  document.getElementById('totalFat').textContent="Total Fat: "+totalFatSum;
+  let cal= (totalCarbSum*4)+(totalProSum*4)+(totalFatSum*9)
+document.getElementById('totalCal').textContent="Total Calorie: "+cal;
+
+  // Log or display the results
+  console.log('Total Carbs:', totalCarbSum);
+  console.log('Total Protein:', totalProSum);
+  console.log('Total Fat:', totalFatSum);
+  let carBolus=(totalCarbSum*  $("#carbRatio").val());
+  console.log($("#carbRatio").val())
+  document.getElementById('bolus').textContent= "Carb Bolus: " + carBolus;
+
+
+}
+//this function may not be needed anymore will decide later whether or not to delete
+function observeTableUpdates() {
+  const table = document.getElementById('foodList');
+
+  // Create a MutationObserver to watch for changes in the table
+  const observer = new MutationObserver((mutationsList, observer) => {
+    for (let mutation of mutationsList) {
+      if (mutation.type === 'childList') {
+    //    console.log('Table updated:', mutation);  // Logs the mutation details to the console
+      //  handleTableUpdate(mutation);
+      }
+    }
+  });
+
+  const config = { childList: true, subtree: true };
+
+  observer.observe(table, config);
+}
+
+//this function stores original value befor edit
+//function is also no longer necessary since it's built into table edit function
+function startEdit(event) {
+
+  const cell = event.target;
+  cell.setAttribute('data-original-value', cell.textContent);
+  console.log("start event");
+    console.log(cell.textContent);
+}
+
+//this function handles change to data in row after edit
+//but is handled inline earlier but keeping this code for if I figure out a betterway to call it through this function
+function onEdit(event){
+  const cell = event.target;
+  const originalValue = cell.getAttribute('data-original-value');
+  const editedValue = cell.textContent;
+  const column = cell.cellIndex;  // Get the column index
+  const row = cell.closest('tr');  // Get row
+  let rate = editedValue/originalValue;
+  for(let i = 4; i < row.cells.length; i++){
+    let cellVal=parseFloat(row.cells[i].textContent || row.cells[i].innerText);
+    cellVal=cellVal*rate;
+    row.cells[i].textContent=cellVal;
+
+  }
+
+
+}
+//this function is now added dynamically to the buttons but should standardize to use this one
+function deleteRow(button) {
+    const row = button.closest('tr');
+    row.remove();
+    handleTableUpdate();
+
+}
 
 // Function to show and populate the second menu
 function showSecondMenu() {
@@ -124,22 +367,36 @@ function showSecondMenu() {
     const selectedCategory = firstMenu.value;
     const secondMenuContainer = document.getElementById("secondMenuContainer");
     const secondMenu = document.getElementById("secondMenu");
-
     // Clear previous options
     secondMenu.innerHTML = "";
 
-    // Populate the second menu with options based on selection
-    options[selectedCategory].forEach(item => {
-        const option = document.createElement("option");
-        option.value = item.toLowerCase();
-        option.textContent = item;
-        secondMenu.appendChild(option);
-    });
+        // Get CSRF token value from hidden input
+        const csrfToken = $('input[name="csrf_token"]').val();
 
-    // Show the second menu
+        $.ajax({
+            url: '/getcategorylist',
+            type: 'POST',
+            contentType: 'application/json',
+            headers: {
+                'X-CSRFToken': csrfToken  // Include token in headers
+            },
+            data: JSON.stringify({ key: selectedCategory }),
+            success: function (response) {
+                console.log('Success:', response);
+                response.forEach(item => {
+                    const option = document.createElement("option");
+                    option.value = item.toLowerCase();
+                    option.textContent = item;
+                    secondMenu.appendChild(option);
+                });
+            },
+            error: function (xhr, status, error) {
+                console.error('Error:', error);
+            }
+        });
     secondMenuContainer.style.display = "block";
 }
-
+observeTableUpdates();
 
 </script>
 

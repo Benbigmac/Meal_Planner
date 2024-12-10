@@ -4,7 +4,7 @@ __pycache__/
 *$py.class
 mealwiz/__pycache__/
 # C extensions
-*.so
+*.db
 
 # Distribution / packaging
 .Python

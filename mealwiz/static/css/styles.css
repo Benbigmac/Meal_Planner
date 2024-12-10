@@ -39,17 +39,21 @@ tr:nth-child(even) {
 .column {
   flex: 50%;
 }
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%; /* Ensures the body height spans the full viewport */
+}
 
+.container {
+  display: flex;
+  flex-direction: column;
+  height: 100%; /* Make the container take up the full viewport height */
+}
 
-
-
-.bottomFoot {
-  position: absolute; /* Positions the footer relative to its parent (body) */
-  bottom: 0;          /* Aligns it to the bottom of the body */
-  width: 100%;        /* Makes it stretch across the page */
-  background-color: lightgreen; /* For visibility */
-  text-align: center;           /* Centers text horizontally */
-  padding: 10px;                /* Adds some spacing */
+.table-container {
+  flex: 1; /* Fills all available space above the footer */
+  overflow-y: auto; /* Makes the table content scrollable */
 }
 
 

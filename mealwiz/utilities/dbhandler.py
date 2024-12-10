@@ -9,7 +9,7 @@ import json
 class mealWizDB:
     DB_NAME=''
 
-    def __init__(self, db_name='/mealWiz.db'):
+    def __init__(self, db_name='/../mealWiz.db'):
          print("db helper initialized")
          basedir = os.path.abspath(os.path.dirname(__file__))
          print(basedir)
@@ -121,19 +121,15 @@ class mealWizDB:
             conn.execute(query, (typename,))
             conn.commit()
 
-    def create_meal(self, mealtime: str, totalcarbs: float, totalfat: float, totalprotein: float, ratios: int) -> int:
-        """
-        Insert a new meal into the Meals table and return the generated meal_code.
-        """
+    def create_meal(self, code: int, mealtime: str, totalcarbs: float, totalfat: float, totalprotein: float, ratios: int):
+        """Insert a new meal into the Meals table."""
         query = '''
-        INSERT INTO Meals (mealtime, totalcarbs, totalfat, totalprotein, ratios)
-        VALUES (?, ?, ?, ?, ?)
+        INSERT INTO Meals (code, mealtime, totalcarbs, totalfat, totalprotein, ratios)
+        VALUES (?, ?, ?, ?, ?, ?)
         '''
         with self.connect_db() as conn:
-            cursor = conn.execute(query, (mealtime, totalcarbs, totalfat, totalprotein, ratios))
+            conn.execute(query, (code, mealtime, totalcarbs, totalfat, totalprotein, ratios))
             conn.commit()
-            return cursor.lastrowid  # Get the generated ID
-            
 
     def add_food_to_meal(meal_code: int, food_id: int):
         """Link a food item to a meal in the MealFoodItems table."""
