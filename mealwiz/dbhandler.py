@@ -18,7 +18,9 @@ class mealWizDB:
 
     def connect_db(self):
         """Connect to the SQLite database."""
-        return sqlite3.connect(self.DB_NAME)
+        conn = sqlite3.connect(self.DB_NAME)
+        conn.execute("PRAGMA foreign_keys = ON;")
+        return conn
 
 
     def add_food_item(self, foodname, carbs, protein, fat, fiber, saturated_fat, trans_fat, cholesterol,
@@ -133,17 +135,71 @@ class mealWizDB:
             cursor = conn.execute(query, (mealtime, totalcarbs, totalfat, totalprotein, ratios))
             conn.commit()
             return cursor.lastrowid  # Get the generated ID
-            
 
-    def add_food_to_meal(meal_code: int, food_id: int):
-        """Link a food item to a meal in the MealFoodItems table."""
+    #function is here because I was running out of ideas on how to solve a bug with getting the name of food items related to meals
+    def food_exists(self, food_id):
+        query = "SELECT 1 FROM Food WHERE id = ?"
+        with self.connect_db() as conn:
+            cursor = conn.execute(query, (food_id,))
+            return cursor.fetchone() is not None
+
+    def add_food_to_meal(self, meal_code: int, food_id: int, amount: float, unit: str):
+        """
+        Link a food item to a meal with its amount and unit.
+        """
         query = '''
-        INSERT INTO MealFoodItems (meal_code, food_id)
-        VALUES (?, ?)
+        INSERT INTO MealFoodItems (meal_code, food_id, amount, unit)
+        VALUES (?, ?, ?, ?)
         '''
         with self.connect_db() as conn:
-            conn.execute(query, (meal_code, food_id))
+            conn.execute(query, (meal_code, food_id, amount, unit))
             conn.commit()
+
+    def get_total_meals(self):
+        query = "SELECT COUNT(*) AS total FROM Meals;"
+        with self.connect_db() as conn:
+            result = conn.execute(query).fetchone()
+        return result[0]
+
+
+    def get_paginated_meals(self, per_page: int, offset: int):
+        """
+        Retrieves paginated meal data, including food names and calculated total calories.
+        """
+        query = '''
+        SELECT
+            Meals.code AS meal_code,
+            DATE(Meals.mealtime) AS meal_date,
+            TIME(Meals.mealtime) AS meal_time,
+            GROUP_CONCAT(Food.foodname, ', ') AS food_names,
+            Meals.totalcarbs AS total_carbs,
+            Meals.totalfat AS total_fat,
+            Meals.totalprotein AS total_protein,
+            (Meals.totalcarbs * 4 + Meals.totalprotein * 4 + Meals.totalfat * 9) AS total_calories
+        FROM Meals
+        LEFT JOIN MealFoodItems ON Meals.code = MealFoodItems.meal_code
+        LEFT JOIN Food ON MealFoodItems.food_id = Food.id
+        GROUP BY Meals.code
+        ORDER BY Meals.mealtime DESC
+        LIMIT ? OFFSET ?;
+        '''
+        with self.connect_db() as conn:
+            conn.row_factory = sqlite3.Row
+            cursor = conn.execute(query, (per_page, offset))
+            results = cursor.fetchall()
+
+        return [
+            {
+                "meal_code": row["meal_code"],
+                "meal_date": row["meal_date"],
+                "meal_time": row["meal_time"],
+                "food_names": row["food_names"],
+                "total_carbs": row["total_carbs"],
+                "total_fat": row["total_fat"],
+                "total_protein": row["total_protein"]
+            }
+            for row in results
+        ]
 
     def create_restaurant(code: int, name: str):
         """Insert a new restaurant into the restaurants table."""

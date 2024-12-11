@@ -18,7 +18,9 @@ class mealWizDB:
 
     def connect_db(self):
         """Connect to the SQLite database."""
-        return sqlite3.connect(self.DB_NAME)
+        conn = sqlite3.connect(self.DB_NAME)
+        conn.execute("PRAGMA foreign_keys = ON;")
+        return conn
 
 
     def add_food_item(self, foodname, carbs, protein, fat, fiber, saturated_fat, trans_fat, cholesterol,
@@ -121,25 +123,77 @@ class mealWizDB:
             conn.execute(query, (typename,))
             conn.commit()
 
-    def create_meal(self, code: int, mealtime: str, totalcarbs: float, totalfat: float, totalprotein: float, ratios: int):
-        """Insert a new meal into the Meals table."""
+    def create_meal(self, mealtime: str, totalcarbs: float, totalfat: float, totalprotein: float, ratios: int) -> int:
+        """
+        Insert a new meal into the Meals table and return the generated meal_code.
+        """
         query = '''
-        INSERT INTO Meals (code, mealtime, totalcarbs, totalfat, totalprotein, ratios)
-        VALUES (?, ?, ?, ?, ?, ?)
+        INSERT INTO Meals (mealtime, totalcarbs, totalfat, totalprotein, ratios)
+        VALUES (?, ?, ?, ?, ?)
         '''
         with self.connect_db() as conn:
-            conn.execute(query, (code, mealtime, totalcarbs, totalfat, totalprotein, ratios))
+            cursor = conn.execute(query, (mealtime, totalcarbs, totalfat, totalprotein, ratios))
+            conn.commit()
+            return cursor.lastrowid  # Get the generated ID
+
+
+    def add_food_to_meal(self, meal_code: int, food_id: int, amount: float, unit: str):
+        """
+        Link a food item to a meal with its amount and unit.
+        """
+        query = '''
+        INSERT INTO MealFoodItems (meal_code, food_id, amount, unit)
+        VALUES (?, ?, ?, ?)
+        '''
+        with self.connect_db() as conn:
+            conn.execute(query, (meal_code, food_id, amount, unit))
             conn.commit()
 
-    def add_food_to_meal(meal_code: int, food_id: int):
-        """Link a food item to a meal in the MealFoodItems table."""
+    def get_total_meals(self):
+        query = "SELECT COUNT(*) AS total FROM Meals;"
+        with self.connect_db() as conn:
+            result = conn.execute(query).fetchone()
+        return result[0]
+
+
+    def get_paginated_meals(self, per_page: int, offset: int):
+        """
+        Retrieves paginated meal data, including food names and calculated total calories.
+        """
         query = '''
-        INSERT INTO MealFoodItems (meal_code, food_id)
-        VALUES (?, ?)
+        SELECT
+            Meals.code AS meal_code,
+            DATE(Meals.mealtime) AS meal_date,
+            TIME(Meals.mealtime) AS meal_time,
+            GROUP_CONCAT(Food.foodname, ', ') AS food_names,
+            Meals.totalcarbs AS total_carbs,
+            Meals.totalfat AS total_fat,
+            Meals.totalprotein AS total_protein,
+            (Meals.totalcarbs * 4 + Meals.totalprotein * 4 + Meals.totalfat * 9) AS total_calories
+        FROM Meals
+        LEFT JOIN MealFoodItems ON Meals.code = MealFoodItems.meal_code
+        LEFT JOIN Food ON MealFoodItems.food_id = Food.id
+        GROUP BY Meals.code
+        ORDER BY Meals.mealtime DESC
+        LIMIT ? OFFSET ?;
         '''
         with self.connect_db() as conn:
-            conn.execute(query, (meal_code, food_id))
-            conn.commit()
+            conn.row_factory = sqlite3.Row
+            cursor = conn.execute(query, (per_page, offset))
+            results = cursor.fetchall()
+
+        return [
+            {
+                "meal_code": row["meal_code"],
+                "meal_date": row["meal_date"],
+                "meal_time": row["meal_time"],
+                "food_names": row["food_names"],
+                "total_carbs": row["total_carbs"],
+                "total_fat": row["total_fat"],
+                "total_protein": row["total_protein"]
+            }
+            for row in results
+        ]
 
     def create_restaurant(code: int, name: str):
         """Insert a new restaurant into the restaurants table."""

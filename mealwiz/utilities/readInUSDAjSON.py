@@ -23,7 +23,8 @@ def process_usda_items_to_mwdb(usda_items_raw, foodtype):
     if 'foodMeasures' in item and item['foodMeasures']:
         serving_size = item['foodMeasures'][0].get('gramWeight', 0)
         serving_size_unit = item['foodMeasures'][0].get('measureUnitName', 'g')
-
+    if "Flour" in ''.join(usda_items['description'].split(',')):
+        foodtype="Baking Goods"
     mwDB.add_food_item(
         foodname=''.join(usda_items['description'].split(',')),
         carbs=nutrients.get('Carbohydrate, by difference', 0.0),
@@ -54,9 +55,24 @@ def process_usda_items_to_mwdb(usda_items_raw, foodtype):
 
 
 # Specify the path to the JSON file
-file_path = ["Spice.json","Vegetable.json", "Fruit.json"]
+file_path = ["Spice.json","Vegetable.json", "Fruit.json", "Meat.json"]
 
 
+mwDB=mealWizDB()
+mwDB.create_ratio('8:00', 'Breakfast', 0.116, 0.045, 0.08)
+mwDB.create_ratio('12:00', 'Lunch', 0.116, 0.045, 0.08)
+mwDB.create_foodtype( "Baking Goods")
+mwDB.create_foodtype( "Bread")
+mwDB.create_foodtype( "Cheese")
+mwDB.create_foodtype( "Chips")
+mwDB.create_foodtype( "Dairy")
+mwDB.create_foodtype( "Drinks")
+mwDB.create_foodtype( "Fruit")
+mwDB.create_foodtype( "Fish")
+mwDB.create_foodtype( "Meat")
+mwDB.create_foodtype( "Pretzels")
+mwDB.create_foodtype( "Spice")
+mwDB.create_foodtype( "Vegetable")
 try:
     # Open the file and load its contents
     for foodList in file_path:

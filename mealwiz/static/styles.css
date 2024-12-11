@@ -1,3 +1,21 @@
+.second-menu {
+  position: relative;
+  display: inline-block;
+}
+
+#secondMenu {
+  width: 200px; /* Set a fixed width for the select menu */
+  max-width: 100%; /* Ensure it doesn't stretch beyond its parent container */
+  overflow: auto; /* Handle overflow when text is too long */
+  white-space: nowrap; /* Prevent text from wrapping */
+  text-overflow: ellipsis; /* Add ellipsis if the text is too long */
+}
+
+/* Add this to ensure the select menu does not overflow vertically */
+#secondMenuContainer {
+  max-height: 200px; /* Set max height to limit dropdown size */
+  overflow-y: auto; /* Add vertical scroll if needed */
+}
 /* Add a black background color to the top navigation */
 .topnav {
   background-color: #333;

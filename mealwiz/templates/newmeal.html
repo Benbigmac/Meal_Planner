@@ -47,7 +47,7 @@
 <td>
     <div id="secondMenuContainer" class="second-menu">
         <label for="secondMenu"></label>
-        <select id="secondMenu" size="5">
+        <select id="secondMenu" size="5" style="x-overflow:scrollable">
             <!-- Options will be populated based on selection -->
         </select>
     </div>
@@ -99,7 +99,7 @@
 
   </div><div class="bottomFoot">
 
-<footer style="position:fixed"><button onclick="saveMeal()" style="float:right">Save</button></footer>
+<footer style=""><button onclick="saveMeal()" style="float:right">Save</button></footer>
 </div>
 <script language="javascript">
   $( document ).ready(function() {
@@ -111,11 +111,42 @@
 
 
   function saveMeal(){
+      const csrfToken = $('input[name="csrf_token"]').val();
+    //totals
+      const carb = document.getElementById('totalCarb').textContent;
+      const protein = document.getElementById('totalProtein').textContent;
+      const fat = document.getElementById('totalFat').textContent;
+      //ratios
 
+      let mealtime= $("#currentTime").text;
 
-
-
-
+      //list of food IDs amount and serving size unit
+      const ratio =$("#ratioSelected").val();
+      const table = document.getElementById('foodList');
+      const rows = table.rows;
+      let foodInfo = [];
+      for (let i = 1; i < rows.length; i++) {
+        const row = rows[i];
+        foodInfo.push({food_id:row.cells[0].textContent, amount:row.cells[4].textContent, unit:row.cells[3].textContent });
+      }
+      console.log(foodInfo);
+      //amount of the food items and units used
+      console.log(mealtime);
+      console.log(carb);
+      console.log(protein);
+      console.log(fat);
+      $.ajax({
+          url: '/createMeal',
+          type: 'POST',
+          contentType: 'application/json',
+          headers: {
+              'X-CSRFToken': csrfToken  // Include token in header to avoid error
+          },
+          data: JSON.stringify({ mealtime: mealtime, totalcarbs: carb, totalprotein:protein, totalfat:fat, ratio:ratio, food_items:foodInfo}),
+          success: function (response) {
+              console.log('Success:', response);
+            }
+          });
   }
 
   function ratioSelect()
@@ -223,6 +254,7 @@ function sayhi()
           console.log('Success:', response);
           const newRow = table.insertRow();
           let counter = 1;
+          console.log(response);
           response[0].forEach(data => {
             const newCell = newRow.insertCell();
             newCell.textContent = data;

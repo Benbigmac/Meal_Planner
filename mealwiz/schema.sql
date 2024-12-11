@@ -28,8 +28,6 @@ CREATE TABLE food (
     FOREIGN KEY (foodtype) REFERENCES foodtypes (id)
 );
 
-
-
 CREATE TABLE `foodtypes` (
   `id` INTEGER PRIMARY KEY,
   `typename` TEXT
@@ -59,12 +57,15 @@ CREATE TABLE `ratios` (
 );
 
 -- Junction table for Meals and Food items
-CREATE TABLE `MealFoodItems` (
-  `meal_code` INTEGER,
-  `food_id` INTEGER,
-  FOREIGN KEY (`meal_code`) REFERENCES `Meals` (`code`),
-  FOREIGN KEY (`food_id`) REFERENCES `food` (`id`)
+CREATE TABLE MealFoodItems (
+    meal_code INTEGER,
+    food_id INTEGER,
+    amount REAL NOT NULL,        -- Amount of the food item
+    unit TEXT NOT NULL,          -- Unit of measurement (e.g., "g", "cup")
+    FOREIGN KEY (meal_code) REFERENCES Meals (code),
+    FOREIGN KEY (food_id) REFERENCES food (id)
 );
+
 
 -- Junction table for Restaurants and Food items
 CREATE TABLE `RestaurantFoodItems` (
