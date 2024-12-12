@@ -196,7 +196,8 @@ class mealWizDB:
                 "food_names": row["food_names"],
                 "total_carbs": row["total_carbs"],
                 "total_fat": row["total_fat"],
-                "total_protein": row["total_protein"]
+                "total_protein": row["total_protein"],
+                "total_calories": row["total_calories"]
             }
             for row in results
         ]

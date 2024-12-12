@@ -190,7 +190,8 @@ class mealWizDB:
                 "food_names": row["food_names"],
                 "total_carbs": row["total_carbs"],
                 "total_fat": row["total_fat"],
-                "total_protein": row["total_protein"]
+                "total_protein": row["total_protein"],
+                "total_calories": row["total_calories"]
             }
             for row in results
         ]
@@ -204,6 +205,100 @@ class mealWizDB:
         with self.connect_db() as conn:
             conn.execute(query, (code, name))
             conn.commit()
+
+
+def get_meal_information_by_code(self, meal_code):
+    """
+    Retrieves all meal information by meal code, including associated food items and nutritional details.
+
+    :param meal_code: The code of the meal to retrieve.
+    :return: A dictionary containing meal details and associated food items.
+    """
+    with self.connect_db() as conn:
+        conn.row_factory = sqlite3.Row  # Allows access to columns by name
+        cursor = conn.cursor()
+
+        try:
+            # Fetch meal details
+            cursor.execute(
+                """
+                SELECT *
+                FROM Meals
+                WHERE code = ?
+                """,
+                (meal_code,)
+            )
+            meal = cursor.fetchone()
+
+            if not meal:
+                return {"error": "Meal not found"}
+
+            # Fetch associated food items
+            cursor.execute(
+                """
+                SELECT f.id, f.foodname, f.servingsize, f.servingsizeunit, mf.amount, mf.unit,
+                       f.carbs, f.protein, f.fat, f.fiber, f.saturated_fat, f.trans_fat,
+                       f.cholesterol, f.sodium, f.potassium, f.calcium, f.iron, f.vitamin_a,
+                       f.vitamin_c, f.vitamin_d, f.vitamin_k, f.magnesium, f.zinc,
+                       f.glycemic_index, f.glycemic_load, f.omega_3, f.omega_6
+                FROM MealFoodItems mf
+                JOIN food f ON mf.food_id = f.id
+                WHERE mf.meal_code = ?
+                """,
+                (meal_code,)
+            )
+            food_items = cursor.fetchall()
+
+            # Structure the results
+            meal_details = {
+                "meal_code": meal["code"],
+                "mealtime": meal["mealtime"],
+                "total_carbs": meal["totalcarbs"],
+                "total_fat": meal["totalfat"],
+                "total_protein": meal["totalprotein"],
+                "ratios": meal["ratios"],
+                "food_items": [
+                    {
+                        "food_id": food["id"],
+                        "foodname": food["foodname"],
+                        "servingsize": food["servingsize"],
+                        "servingsizeunit": food["servingsizeunit"],
+                        "amount": food["amount"],
+                        "unit": food["unit"],
+                        "nutrients": {
+                            "carbs": food["carbs"],
+                            "protein": food["protein"],
+                            "fat": food["fat"],
+                            "fiber": food["fiber"],
+                            "saturated_fat": food["saturated_fat"],
+                            "trans_fat": food["trans_fat"],
+                            "cholesterol": food["cholesterol"],
+                            "sodium": food["sodium"],
+                            "potassium": food["potassium"],
+                            "calcium": food["calcium"],
+                            "iron": food["iron"],
+                            "vitamin_a": food["vitamin_a"],
+                            "vitamin_c": food["vitamin_c"],
+                            "vitamin_d": food["vitamin_d"],
+                            "vitamin_k": food["vitamin_k"],
+                            "magnesium": food["magnesium"],
+                            "zinc": food["zinc"],
+                            "glycemic_index": food["glycemic_index"],
+                            "glycemic_load": food["glycemic_load"],
+                            "omega_3": food["omega_3"],
+                            "omega_6": food["omega_6"],
+                        },
+                    }
+                    for food in food_items
+                ],
+            }
+
+        return meal_details
+
+    except sqlite3.Error as e:
+        return {"error": str(e)}
+
+
 
     def add_food_to_restaurant(restaurant_code: int, food_id: int):
         """Link a food item to a restaurant in the RestaurantFoodItems table."""

@@ -4,7 +4,7 @@
 }
 
 #secondMenu {
-  width: 200px; /* Set a fixed width for the select menu */
+   width: 40vw; 
   max-width: 100%; /* Ensure it doesn't stretch beyond its parent container */
   overflow: auto; /* Handle overflow when text is too long */
   white-space: nowrap; /* Prevent text from wrapping */

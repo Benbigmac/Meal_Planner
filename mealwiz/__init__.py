@@ -47,6 +47,14 @@ def create_app(test_config=None):
         # Get meals from the database
 
         meals = mwDB.get_paginated_meals(per_page, offset)
+        for meal in meals:
+        #    Meals.totalcarbs * 4 + Meals.totalprotein * 4 + Meals.totalfat * 9)
+            print(__calculate_Calories(meal['total_carbs'], meal['total_protein'],meal['total_fat']))
+            meal['total_calories'] = __calculate_Calories(float(meal['total_carbs'].split(":")[1]), float(meal['total_protein'].split(":")[1]),float(meal['total_fat'].split(":")[1]))
+            meal['total_carbs'] = meal['total_carbs'].split(":")[1]
+            meal['total_protein'] = meal['total_protein'].split(":")[1]
+            meal['total_fat'] = meal['total_fat'].split(":")[1]
+
         print(meals)
         total_meals = mwDB.get_total_meals()
         total_pages = (total_meals + per_page - 1) // per_page
@@ -95,6 +103,16 @@ def create_app(test_config=None):
         print(foodCategories.sort())
         print(foodCategories)
         return render_template("newmeal.html",foodCategories=foodCategories,ratios=ratios,__getFoodCategoryList=__getFoodCategoryList)
+
+    @app.route('/viewMeal')
+    def viewMeal():
+        mwDB=mealWizDB()
+        ratios=mwDB.get_all_ratios()
+        print(ratios)
+        foodCategories=__getCategories()
+
+        return render_template("newmeal.html",foodCategories=foodCategories,ratios=ratios,__getFoodCategoryList=__getFoodCategoryList)
+
 
     @app.route('/Updateratios')
     def ratios():
