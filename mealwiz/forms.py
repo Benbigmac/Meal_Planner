@@ -46,3 +46,19 @@ class addFood(FlaskForm):
 
     FoodType = SelectField("Food Category", choices=[])
     submit = SubmitField('Submit')
+
+class addRatio(FlaskForm):
+        ratioName = StringField('Ratio Name', validators=[DataRequired()])
+        ratioTime = StringField('Ratio Name', validators=[DataRequired()])
+        CarbRatio = FloatField(
+            "Carb Ratio",
+            validators=[InputRequired(), NumberRange(min=0)]
+        )
+        ProteinRatio = FloatField(
+            "Protein Ratio",
+            validators=[InputRequired(), NumberRange(min=0)]
+        )
+        FatRatio = FloatField(
+            "Fat Ratio",
+            validators=[InputRequired(), NumberRange(min=0)]
+        )

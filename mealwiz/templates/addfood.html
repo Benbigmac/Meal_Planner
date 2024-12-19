@@ -1,3 +1,19 @@
+{% extends "main.html" %}
+{% block mealTable %}
 
 {% import 'bootstrap/wtf.html' as wtf %}
-        {{ wtf.quick_form(form) }}
+
+<form class="form form-horizontal" method="post" role="form">
+  {{ form.hidden_tag() }}
+  {{ wtf.form_errors(form, hiddens="only") }}
+
+  {{ wtf.form_field(form.foodname ,placeholder="Food Name") }}
+  {{ wtf.form_field(form.servingsize, placeholder="Serving Size") }}
+  {{ wtf.form_field(form.servingsizeunit) }}
+  {{ wtf.form_field(form.carbs) }}
+  {{ wtf.form_field(form.protein) }}
+  {{ wtf.form_field(form.fat,placeholder="fat") }}
+</form>
+
+
+{% endblock %}

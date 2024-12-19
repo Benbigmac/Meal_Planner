@@ -4,7 +4,7 @@
 }
 
 #secondMenu {
-   width: 40vw; 
+   width: 40vw;
   max-width: 100%; /* Ensure it doesn't stretch beyond its parent container */
   overflow: auto; /* Handle overflow when text is too long */
   white-space: nowrap; /* Prevent text from wrapping */
@@ -45,7 +45,7 @@
 }
 
 tr:nth-child(even) {
-  background-color: #f2f2f2;
+/*  background-color: #f2f2f2; */
 }
 
 .row {
