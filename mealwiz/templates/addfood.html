@@ -6,14 +6,29 @@
 <form class="form form-horizontal" method="post" role="form">
   {{ form.hidden_tag() }}
   {{ wtf.form_errors(form, hiddens="only") }}
-
-  {{ wtf.form_field(form.foodname ,placeholder="Food Name") }}
-  {{ wtf.form_field(form.servingsize, placeholder="Serving Size") }}
-  {{ wtf.form_field(form.servingsizeunit) }}
-  {{ wtf.form_field(form.carbs) }}
-  {{ wtf.form_field(form.protein) }}
-  {{ wtf.form_field(form.fat,placeholder="fat") }}
+  <div class="row g-3"><div class="col"><h1>Add Food Item:</h1></div></div>
+  <div class="row g-3"></div>
+  <div class="row g-3">
+    <div class="col">
+  {{ wtf.form_field(form.foodname, placeholder="Food Name", class="form-control" ) }}
+  </div>
+  <div class="col">
+  {{ wtf.form_field(form.servingsize, placeholder="Serving Size",class="form-control") }}
+  </div>
+  <div class="col">
+  {{ wtf.form_field(form.servingsizeunit,class="form-select form-control") }}
+  </div>
+  </div>
+  {{ wtf.form_field(form.carbs,placeholder="Carbs",class="form-control") }}
+  {{ wtf.form_field(form.protein,placeholder="Protien",class="form-control") }}
+  {{ wtf.form_field(form.fat,placeholder="fat",class="form-control") }}
+  {{ wtf.form_field(form.fiber,placeholder="fiber",class="form-control") }}
 </form>
 
+<style>
+  .nameStuff {
+    flex: 50%;
+  }
+  </style>
 
 {% endblock %}
