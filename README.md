@@ -3,6 +3,23 @@ from this directory level use this command
 flask --app mealwiz run --debugger
 
 
+#TODO List
+
+## styling changes needed
+- fix up food library styling
+- remove red lines on landing page
+- clean up ratios modal
+-
+## landing page changes needed
+- ability to open existing meal
+- ability to add new food to food library
+- modify ratios and add new ones
+## updates needed for new Meal page
+- change units of measurement used and convert serving size on food items
+- when page loads populate food library tab based on what's active/selected
+- autoselect ratio based on closest time
+
+
 #Common Serving sizes
 Grams (g)
 Milligrams (mg)
