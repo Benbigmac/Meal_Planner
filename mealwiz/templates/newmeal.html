@@ -1,8 +1,8 @@
 {% extends "main.html" %}
 {% block mealTable %}
 <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
-<div class="row">
- <div class="column" >
+<div class="row g-3"">
+ <div class="col" >
    <div >
 <div style="  float:left;padding:10px">
   <span id="currentTime" onclick="updateTime()"style="float:left;"> Meal Time: </span> <span id="bolus"style=" float:right;">Bolus:</span>
@@ -26,7 +26,7 @@
 
  </div>
 
- <div class="column" style="background-color:powderblue;">
+ <div class="col" style="background-color:#f5f5f5">
    Food Library
 <table>
   <tr>
@@ -47,7 +47,7 @@
 <td>
     <div id="secondMenuContainer" class="second-menu">
         <label for="secondMenu"></label>
-        <select id="secondMenu" size="5" style="x-overflow:scrollable">
+        <select id="secondMenu" size="5" class="food-library">
             <!-- Options will be populated based on selection -->
         </select>
     </div>
@@ -55,7 +55,7 @@
     </tr>
 </table>
 
-   <button onClick="sayhi();">Add food</button>
+ <button onClick="sayhi();">Add food</button>
  </div>
 </div>
 <div class="table-container">
@@ -88,6 +88,7 @@
                 <th class="Nonvis" style="display:none">Omega-3</th>
                 <th class="Nonvis" style="display:none">Omega-6</th>
                 <th class="Nonvis" style="display:none">Food Type</th>
+                <th> Remove Item</th>
             </tr>
         </thead>
         <tbody id="tbod" style="overflow-y:scroll;">
