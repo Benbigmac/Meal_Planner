@@ -9,15 +9,18 @@ flask --app mealwiz run --debugger
 - fix up food library styling
 - remove red lines on landing page
 - clean up ratios modal
--
+- fix food list for meal pushing save meal button out of view
+- affix save meal to bottom of page on PC version
 ## landing page changes needed
 - ability to open existing meal
 - ability to add new food to food library
 - modify ratios and add new ones
+- display insulin for meals
 ## updates needed for new Meal page
 - change units of measurement used and convert serving size on food items
 - when page loads populate food library tab based on what's active/selected
 - autoselect ratio based on closest time
+-
 
 
 #Common Serving sizes

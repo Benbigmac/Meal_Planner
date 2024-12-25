@@ -69,7 +69,8 @@ def create_app(test_config=None):
     @app.route('/newFood')
     def newFood():
         form = addFood()
-        return render_template('addfood.html', form=form)
+        foodCategories=__getCategories()
+        return render_template('addfood.html', form=form,foodCategories=json.dumps(foodCategories))
 
 
     # Route to get paginated meals
@@ -109,6 +110,7 @@ def create_app(test_config=None):
         mwDB=mealWizDB()
         ratios=mwDB.get_all_ratios()
         print(ratios)
+
         foodCategories=__getCategories()
 
         return render_template("newmeal.html",foodCategories=foodCategories,ratios=ratios,__getFoodCategoryList=__getFoodCategoryList)

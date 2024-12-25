@@ -13,6 +13,9 @@
   {{ wtf.form_field(form.foodname, placeholder="Food Name", class="form-control" ) }}
   </div>
   <div class="col">
+    {{ wtf.form_field(form.FoodType,class="form-select form-control") }}
+    </div>
+  <div class="col">
   {{ wtf.form_field(form.servingsize, placeholder="Serving Size",class="form-control") }}
   </div>
   <div class="col">
@@ -25,6 +28,20 @@
   {{ wtf.form_field(form.fiber,placeholder="fiber",class="form-control") }}
   {{ wtf.form_field(form.saturated_fat,placeholder="Saturated Fat",class="form-control") }}
   {{ wtf.form_field(form.trans_fat,placeholder="Trans Fat",class="form-control") }}
+  {{ wtf.form_field(form.cholesterol,placeholder="Cholesterol",class="form-control") }}
+  {{ wtf.form_field(form.sodium,placeholder="Sodium",class="form-control") }}
+  {{ wtf.form_field(form.calcium,placeholder="Calcium",class="form-control") }}
+  {{ wtf.form_field(form.iron,placeholder="Iron",class="form-control") }}
+  {{ wtf.form_field(form.vitamin_a,placeholder="Vitamin A",class="form-control") }}
+  {{ wtf.form_field(form.vitamin_c,placeholder="Vitamin C",class="form-control") }}
+  {{ wtf.form_field(form.vitamin_d,placeholder="Vitamin D",class="form-control") }}
+  {{ wtf.form_field(form.vitamin_k,placeholder="Vitamin K",class="form-control") }}
+  {{ wtf.form_field(form.magnesium,placeholder="Magnesium",class="form-control") }}
+  {{ wtf.form_field(form.zinc,placeholder="Zinc",class="form-control") }}
+  {{ wtf.form_field(form.glycemic_index,placeholder="Glycemic Index",class="form-control") }}
+  {{ wtf.form_field(form.omega_3,placeholder="Omega 3",class="form-control") }}
+  {{ wtf.form_field(form.omega_6,placeholder="Omega 6",class="form-control") }}
+
 </form>
 
 <style>
@@ -45,5 +62,44 @@
       </div>
     </div>
   </div>
+  <script>
+    function addItemsToSelect(items) {
+    const selectField = document.getElementById('FoodType');
+
+    if (!selectField) {
+        console.error('No select field found with ID "FoodType"');
+        return;
+    }
+
+    // Clear existing options (if needed)
+    selectField.innerHTML = '';
+
+    // Add a default placeholder option
+    const placeholderOption = document.createElement('option');
+    placeholderOption.value = '';
+    placeholderOption.textContent = 'Select a Food Type';
+    placeholderOption.disabled = true;
+    placeholderOption.selected = true;
+    selectField.appendChild(placeholderOption);
+
+    // Add each item to the select field
+    items.forEach(item => {
+        const option = document.createElement('option');
+        option.value = item.toLowerCase().replace(/\s+/g, '_'); // Convert to a safe value (e.g., "Food Type" -> "food_type")
+        option.textContent = item;
+        selectField.appendChild(option);
+    });
+}
+
+
+
+$( document ).ready(function() {
+  const foodlist = {{ foodCategories|safe }};
+  addItemsToSelect( foodlist );
+
+});
+
+
+    </script>
 
 {% endblock %}
