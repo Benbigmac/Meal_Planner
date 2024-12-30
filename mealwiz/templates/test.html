@@ -1,56 +1,104 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Delete Table Row</title>
-    <style>
-        table {
-            border-collapse: collapse;
-            width: 50%;
-            margin: 20px auto;
-        }
-        th, td {
-            border: 1px solid #ddd;
-            padding: 8px;
-        }
-        th {
-            background-color: #f4f4f4;
-        }
-        .delete-btn {
-            color: red;
-            cursor: pointer;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Editable Sorted Select Field</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
-    <table id="myTable">
-        <thead>
-            <tr>
-                <th>Item</th>
-                <th>Quantity</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td>Apples</td>
-                <td>10</td>
-                <td><button class="delete-btn" onclick="deleteRow(this)">Delete</button></td>
-            </tr>
-            <tr>
-                <td>Bananas</td>
-                <td>5</td>
-                <td><button class="delete-btn" onclick="deleteRow(this)">Delete</button></td>
-            </tr>
-        </tbody>
-    </table>
+  <div class="container mt-5">
+    <h2>Choose or Add an Option</h2>
+    <form>
+      <div class="mb-3">
+        <label for="foodType" class="form-label">Food Type</label>
+        <div class="input-group">
+          <!-- Select field -->
+          {{ wtf.form_field(form.FoodType, class="form-select form-control", label="Food Type") }}
 
-    <script>
-        function deleteRow(button) {
-            const row = button.closest('tr');
-            row.remove();
+          <!-- Hidden input field for adding new options -->
+          <input
+            type="text"
+            id="newOptionInput"
+            class="form-control d-none"
+            placeholder="Enter new food type"
+          />
+          <button type="button" class="btn btn-success d-none" id="addOptionButton">Add</button>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const selectBox = document.getElementById('foodType');
+      const newOptionInput = document.getElementById('newOptionInput');
+      const addOptionButton = document.getElementById('addOptionButton');
+      const newElem = document.createElement('option');
+      newElem.value = 'add_new';
+      newElem.textContent = 'Add New';
+      selectBox.appendChild(newElem);
+
+      // Listen for changes in the select field
+      selectBox.addEventListener('change', function () {
+        if (selectBox.value === 'add_new') {
+          // Show the text input and button
+          newOptionInput.classList.remove('d-none');
+          addOptionButton.classList.remove('d-none');
+          newOptionInput.focus();
         }
-    </script>
+      });
+
+      // Add the new option in sorted order when the button is clicked
+      addOptionButton.addEventListener('click', function () {
+        const newOptionValue = newOptionInput.value.trim();
+        if (newOptionValue) {
+          // Create a new option element
+          const newOption = document.createElement('option');
+          newOption.value = newOptionValue.toLowerCase().replace(/\s+/g, '_'); // Safe value
+          newOption.textContent = newOptionValue;
+
+          // Add the new option to the select field
+          const options = Array.from(selectBox.options)
+            .filter(option => option.value !== 'add_new') // Exclude "Add New..." option
+            .map(option => ({ value: option.value, text: option.textContent }));
+
+          // Add the new option to the array
+          options.push({ value: newOption.value, text: newOption.textContent });
+
+          // Sort options alphabetically
+          options.sort((a, b) => a.text.localeCompare(b.text));
+
+          // Clear the current select field options
+          selectBox.innerHTML = '';
+
+          // Add sorted options back to the select field
+          options.forEach(optionData => {
+            const optionElement = document.createElement('option');
+            optionElement.value = optionData.value;
+            optionElement.textContent = optionData.text;
+            selectBox.appendChild(optionElement);
+          });
+
+          // Re-add the "Add New..." option
+          const addNewOption = document.createElement('option');
+          addNewOption.value = 'add_new';
+          addNewOption.textContent = '+ Add New...';
+          selectBox.appendChild(addNewOption);
+
+          // Select the newly added option
+          selectBox.value = newOption.value;
+
+          // Clear and hide the input field
+          newOptionInput.value = '';
+          newOptionInput.classList.add('d-none');
+          addOptionButton.classList.add('d-none');
+        } else {
+          alert('Please enter a valid option name.');
+        }
+      });
+    });
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
 </body>
 </html>
