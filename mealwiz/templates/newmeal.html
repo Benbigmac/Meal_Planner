@@ -27,14 +27,11 @@
  </div>
 
  <div class="col" style="background-color:#f5f5f5">
+   <div class=row>
    Food Library
-<table>
-  <tr>
-  <th></th>
-  <th></th>
-  </tr>
-  <tr>
-    <td>
+   </div>
+  <div class="row g-2">
+    <div class="col">
 <div class="container">
     <!-- First Scrollable Select Menu -->
     <select id="firstMenu" size="5" class="select-menu" onchange="showSecondMenu()">
@@ -43,19 +40,20 @@
          {% endfor %}
 
     </select>
-    </td>
-<td>
+    </div>
+    </div>
+<div class="col">
     <div id="secondMenuContainer" class="second-menu">
         <label for="secondMenu"></label>
         <select id="secondMenu" size="5" class="food-library">
             <!-- Options will be populated based on selection -->
         </select>
     </div>
-    </td>
-    </tr>
-</table>
-
+    </div>
+</div>
+<div class="row">
  <button onClick="sayhi();">Add food</button>
+ </div>
  </div>
 </div>
 <div class="table-container">
