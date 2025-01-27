@@ -2,6 +2,8 @@
 from this directory level use this command
 flask --app mealwiz run --debugger
 
+within the utilities folder I've set up some defaults for food taken from the USDA food database. I am not responsible for errors in these food items Information
+nor am I responsible for issues that arise from using said data
 
 #TODO List
 

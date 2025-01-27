@@ -81,6 +81,10 @@ td.food-name:hover {
     background-color: #ecf0f1;
     cursor: pointer;
 }
+.second-menu{
+  overflow-x: scrollable;
+
+}
 .Nonvis {
   display: none;
 }

@@ -18,11 +18,21 @@ def process_usda_items_to_mwdb(usda_items_raw, foodtype):
         if nutrient.get('nutrient'):
             nutrients[nutrient['nutrient']['name']] = nutrient.get('amount', 0.0)
     # Extracting serving size information
-    serving_size = None
-    serving_size_unit = None
-    if 'foodMeasures' in item and item['foodMeasures']:
-        serving_size = item['foodMeasures'][0].get('gramWeight', 0)
-        serving_size_unit = item['foodMeasures'][0].get('measureUnitName', 'g')
+    serving_size = 0
+    serving_size_unit = 'g'
+    #print(item)
+    #print(item['foodPortions'])
+
+    if 'foodPortions' in item and item['foodPortions']:
+        serving_size = item['foodPortions'][0].get('value', 0)
+        #item['foodPortions'][][undetermined]
+        serving_size_unit = item['foodPortions'][0]['measureUnit'].get('name', 'g')
+        if "undetermined" == serving_size_unit or serving_size_unit == "slice" or foodtype == "Cheese" :
+            serving_size_unit = 'g'
+            serving_size = item['foodPortions'][0].get('gramWeight', 100)
+        print("{0} {1}".format(serving_size,serving_size_unit))
+    else:
+        return
     if "Flour" in ''.join(usda_items['description'].split(',')):
         foodtype="Baking Goods"
     mwDB.add_food_item(
@@ -48,14 +58,14 @@ def process_usda_items_to_mwdb(usda_items_raw, foodtype):
         glycemic_load=0.0,
         omega_3=0.0,
         omega_6=0.0,
-        servingsize= 100.0, #wasted time parsing serving size since all the usda info is based around 100g
-        servingsizeunit= "g",
+        servingsize= serving_size, #wasted time parsing serving size since all the usda info is based around 100g
+        servingsizeunit= serving_size_unit,
         foodtype=mwDB.get_foodtype_id(foodtype)
     )
 
 
 # Specify the path to the JSON file
-file_path = ["Spice.json","Vegetable.json", "Fruit.json", "Meat.json"]
+file_path = ["Spice.json","Vegetable.json", "Fruit.json", "Meat.json","Cheese.json","Dairy.json","Fish.json"]
 
 
 mwDB=mealWizDB()

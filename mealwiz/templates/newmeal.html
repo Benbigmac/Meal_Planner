@@ -5,7 +5,10 @@
  <div class="col" >
    <div >
 <div style="  float:left;padding:10px">
-  <span id="currentTime" onclick="updateTime()"style="float:left;"> Meal Time: </span> <span id="bolus"style=" float:right;">Bolus:</span>
+  <span id="currentTime" onclick="updateTime()"style="float:left;"> Meal Time: </span>
+   <span id="bolus"style=" float:right;">Carb Bolus:</span>
+  <span id="probolus"style=" float:right;">Protein Bolus:</span>
+  <span id="fatbolus"style=" float:right;">Fat Bolus:</span>
   <br>
   <span>Ratios: <select id="ratioSelected" onChange="ratioSelect()">
     {% for ratio in ratios %}
@@ -30,7 +33,6 @@
    <div class=row>
    Food Library
    </div>
-  <div class="row g-2">
     <div class="col">
 <div class="container">
     <!-- First Scrollable Select Menu -->
@@ -39,17 +41,11 @@
          <option value="{{category}}">{{category}}</option>
          {% endfor %}
 
+    </select><select id="secondMenu" size="5" class="food-library">
+        <!-- Options will be populated based on selection -->
     </select>
     </div>
-    </div>
-<div class="col">
-    <div id="secondMenuContainer" class="second-menu">
-        <label for="secondMenu"></label>
-        <select id="secondMenu" size="5" class="food-library">
-            <!-- Options will be populated based on selection -->
-        </select>
-    </div>
-    </div>
+
 </div>
 <div class="row">
  <button onClick="sayhi();">Add food</button>
@@ -336,8 +332,10 @@ document.getElementById('totalCal').textContent="Total Calorie: "+cal;
   let carBolus=(totalCarbSum*  $("#carbRatio").val());
   console.log($("#carbRatio").val())
   document.getElementById('bolus').textContent= "Carb Bolus: " + carBolus;
-
-
+  let proBolus=(totalProSum*  $("#protRatio").val());
+  document.getElementById('probolus').textContent= "Carb Bolus: " + proBolus;
+  let fatBolus=(totalFatSum*  $("#fattRatio").val());
+  document.getElementById('fatbolus').textContent= "Fat Bolus: " + fatBolus;
 }
 //this function may not be needed anymore will decide later whether or not to delete
 function observeTableUpdates() {
