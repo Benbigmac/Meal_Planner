@@ -1,7 +1,7 @@
 import os, json
 from flask import Flask, render_template,request, jsonify
 from .dbhandler import mealWizDB
-from .forms import addFood
+from .forms import addFood, addRatio
 from flask_bootstrap import Bootstrap
 from flask_cors import CORS
 
@@ -163,8 +163,9 @@ def create_app(test_config=None):
     @app.route('/addRatio')
     def create_add_ratio():
         mwDB=mealWizDB()
+        form=addRatio()
         #mwDB.create_ratio('12:00', 'Lunch', 0.116, 0.045, 0.08)
-        return mwDB.get_all_ratios()
+        return render_template("addRatio.html",form=form)
 
     @app.route('/initList')
     def create_add_list():
