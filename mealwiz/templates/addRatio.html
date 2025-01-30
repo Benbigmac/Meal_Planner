@@ -7,3 +7,7 @@
 {{ form.hidden_tag() }}
 {{ wtf.form_errors(form, hiddens="only") }}
 {{ wtf.form_field(form.ratioName, placeholder="Ratio Name", class="form-control", label="Ratio Name") }}
+{{ wtf.form_field(form.ratioTime, placeholder="Ratio Name", class="form-control", label="Time") }}
+{{ wtf.form_field(form.CarbRatio, placeholder="Carb Ratio", class="form-control", label="Carb Ratio") }}
+{{ wtf.form_field(form.ProteinRatio, placeholder="Protein Ratio", class="form-control", label="Protein Ratio") }}
+{{ wtf.form_field(form.FatRatio, placeholder="Fat Ratio", class="form-control", label="Fat Ratio") }}
